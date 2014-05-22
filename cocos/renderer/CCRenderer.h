@@ -38,10 +38,8 @@ NS_CC_BEGIN
 class EventListenerCustom;
 class QuadCommand;
 
-/** Class that knows how to sort `RenderCommand` objects.
- Since the commands that have `z == 0` are "pushed back" in
- the correct order, the only `RenderCommand` objects that need to be sorted,
- are the ones that have `z < 0` and `z > 0`.
+/**  一个知道如何对RenderCommand对象排序的类。
+   因为具有 "z == 0"的命令会被加入到正确的顺序里，唯一需要被排序的RenderCommand对象是那些 'z < 0 '和'z > 0 '的对象。
 */
 class RenderQueue {
 
@@ -66,9 +64,8 @@ struct RenderStackElement
 
 class GroupCommandManager;
 
-/* Class responsible for the rendering in.
-
-Whenever possible prefer to use `QuadCommand` objects since the renderer will automatically batch them.
+/* 负责渲染(render)的类
+    任何时候尽可能地使用QuadCommand对象,因为渲染器会自动批量对它们进行处理。
  */
 class Renderer
 {
@@ -79,48 +76,48 @@ public:
     Renderer();
     ~Renderer();
 
-    //TODO manage GLView inside Render itself
+    //TODO 在Render里独立管理GLView.
     void initGLView();
 
-    /** Adds a `RenderComamnd` into the renderer */
+    /** 增加一个RenderCommand对象到渲染器中 */
     void addCommand(RenderCommand* command);
 
-    /** Adds a `RenderComamnd` into the renderer specifying a particular render queue ID */
+    /** 通过指定一个特殊的渲染队列(render queue)ID来增加一个RenderCommand 对象到渲染器中。 */
     void addCommand(RenderCommand* command, int renderQueue);
 
-    /** Pushes a group into the render queue */
+    /** 把一个组(group)放进渲染队列（render queue)的队尾 */
     void pushGroup(int renderQueueID);
 
-    /** Pops a group from the render queue */
+    /** 把一个组(group)从渲染队列(render queue)的队首拿出 */
     void popGroup();
 
-    /** Creates a render queue and returns its Id */
+    /** 创建一个渲染队列(render queue) 并返回它的ID */
     int createRenderQueue();
 
-    /** Renders into the GLView all the queued `RenderCommand` objects */
+    /** 在GLView上渲染所有被放进队列的RenderCommand对象 */
     void render();
 
-    /** Cleans all `RenderCommand`s in the queue */
+    /** 清除队列里所有RenderCommand对象 */
     void clean();
 
-    /* returns the number of drawn batches in the last frame */
+    /* 返回在上一帧(frame)画了的batch的数目 */
     ssize_t getDrawnBatches() const { return _drawnBatches; }
-    /* RenderCommands (except) QuadCommand should update this value */
+    /* RenderCommand对象(除了QuadCommand对象)应该更新这个值 */
     void addDrawnBatches(ssize_t number) { _drawnBatches += number; };
-    /* returns the number of drawn triangles in the last frame */
+    /* 返回在上一帧(frame)画了的三角形(triangles)的数目 */
     ssize_t getDrawnVertices() const { return _drawnVertices; }
-    /* RenderCommands (except) QuadCommand should update this value */
+    /* RenderCommand对象(除了QuadCommand对象)应该更新这个值 */
     void addDrawnVertices(ssize_t number) { _drawnVertices += number; };
 
     inline GroupCommandManager* getGroupCommandManager() const { return _groupCommandManager; };
 
-    /** returns whether or not a rectangle is visible or not */
+    /** 返回一个矩形是否可见 */
     bool checkVisibility(const Mat4& transform, const Size& size);
 
 protected:
 
     void setupIndices();
-    //Setup VBO or VAO based on OpenGL extensions
+    //基于OpenGL的扩展设置VBO或VAO
     void setupBuffer();
     void setupVBOAndVAO();
     void setupVBO();
@@ -128,7 +125,7 @@ protected:
 
     void drawBatchedQuads();
 
-    //Draw the previews queued quads and flush previous context
+    //去除（flush）之前的环境上下文(context),画预览被放进队列中得quads
     void flush();
     
     void visitRenderQueue(const RenderQueue& queue);
@@ -146,7 +143,7 @@ protected:
     V3F_C4B_T2F_Quad _quads[VBO_SIZE];
     GLushort _indices[6 * VBO_SIZE];
     GLuint _quadVAO;
-    GLuint _buffersVBO[2]; //0: vertex  1: indices
+    GLuint _buffersVBO[2]; //0: 顶点  1: 索引
 
     int _numQuads;
     
@@ -155,7 +152,7 @@ protected:
     // stats
     ssize_t _drawnBatches;
     ssize_t _drawnVertices;
-    //the flag for checking whether renderer is rendering
+    //检查渲染器是否正在渲染的标记
     bool _isRendering;
     
     GroupCommandManager* _groupCommandManager;
